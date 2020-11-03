@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/item")
+@RequestMapping("/catlog")
 public class ItemCatalogApi {
 
 	private Logger log=LoggerFactory.getLogger(this.getClass());
@@ -24,7 +24,7 @@ public class ItemCatalogApi {
 	@GetMapping("/{item}")
 	public String getItem(@PathVariable("item") String itemname)
 	{
-		log.info("Itemname " + this.toString());
+		log.info("Itemname " + itemname);
 		return "Item name" + itemname;
 	}
 	
