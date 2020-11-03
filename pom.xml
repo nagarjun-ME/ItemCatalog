@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.naga.microservice</groupId>
 	<artifactId>ItemCatalog</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>V1</version>
 	<name>ItemCatalog</name>
 	<description>Spring project for Spring Boot</description>
 
@@ -42,6 +42,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+			<groupId>org.sonarsource.scanner.maven</groupId>
+			<artifactId>sonar-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
