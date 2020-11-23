@@ -36,8 +36,10 @@ public class ItemCatalogApi {
 	@Value("${db.service.url}")
 	private String dbUri;
 
-	@Autowired
+	@Autowired(required=true)
 	private ItemFallbackService itemFallbackService;
+
+
 	@GetMapping("/")
 	public String sayHello()
 	{
@@ -66,18 +68,12 @@ public class ItemCatalogApi {
 	@GetMapping("/all")
 	public ResponseEntity <List <Item>>  getAllItems()
 	{
-
 		log.info("Retrieving all Item details");
-
-		ResponseEntity <Product[] > productResponse=restTemplate.getForEntity(dbUri+"/all", Product[].class);
-
-		List <Item> list= new ArrayList<> ();
-
-		Item item=new Item("001ABC", "Technology",2, 20.23, Arrays.asList(productResponse.getBody()));
-		list.add(item);
-		return ResponseEntity.ok().body(list);
+		return ResponseEntity.ok().body(itemFallbackService.getAllProductItems());
 	}
 
+
+	@HystrixCommand
 	@DeleteMapping("/rmv/{prodId}")
 	public ResponseEntity  <HttpStatus> deleteProductFromItemList(@PathVariable long prodId)
 	{
