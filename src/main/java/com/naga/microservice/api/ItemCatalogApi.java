@@ -2,6 +2,8 @@ package com.naga.microservice.api;
 
 import com.naga.microservice.model.Item;
 import com.naga.microservice.model.Product;
+import com.naga.microservice.service.ItemFallbackService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,8 @@ public class ItemCatalogApi {
 	@Value("${db.service.url}")
 	private String dbUri;
 
-
+	@Autowired
+	private ItemFallbackService itemFallbackService;
 	@GetMapping("/")
 	public String sayHello()
 	{
@@ -42,18 +45,23 @@ public class ItemCatalogApi {
 		return "Welcome to item catalog";
 	}
 	
-
+	//@HystrixCommand(fallbackMethod = "getFallbackItemList")
 	@GetMapping("/{pId}")
 	public ResponseEntity<Item> getItemList(@PathVariable("pId") long pId)
 	{
-
 		log.info("Item with product id  " + pId+ " retrieving");
-
-
-		return ResponseEntity.ok().body(new Item("TEST001", "Test Items", 4, 12.22,
-				Arrays.asList(restTemplate.getForEntity(dbUri+pId, Product.class,1).getBody())));
+		return ResponseEntity.ok().body(itemFallbackService.getItemFromProducts(pId));
 	}
 
+
+
+	//No need fallback method
+	/*public ResponseEntity<Item> getFallbackItemList(@PathVariable("pId") long pId) {
+		log.info("Returning default items . There is a problem while retrieving product with id : "+pId);
+	 return ResponseEntity.ok().body(new Item( "Test002", "Technology", 0, 0, Arrays.asList(
+	 		new Product(0, "Innovation in IOT", "A beginner Guide", 0.99)
+	 )));
+	}*/
 
 	@GetMapping("/all")
 	public ResponseEntity <List <Item>>  getAllItems()
